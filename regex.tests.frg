@@ -2,6 +2,21 @@
 
 open "regex.frg"
 
+// Our assertions use the following predicate:
+pred valid {
+    init
+    validTransitions
+}
+
+// Assertion that the index does not decrease along the trace.
+assert {all s1, s2 : State | Trace.tr[s1][s2] = True implies s1.index <= s2.index} is necessary for valid
+
+// Assertion that the accepting node's index is the input's length
+assert {all s : State | s.currNode = Accepting implies s.index = Input.length} is necessary for valid
+
+// Assertion that the Start state can reach the Accepting state
+assert {reachable[Accepting, Start, next, skip]} is necessary for valid
+
 // match the input AAAAAB against the pattern A*B
 pred loop {
     Input.length = 6
