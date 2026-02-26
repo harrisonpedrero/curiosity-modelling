@@ -2,14 +2,16 @@
 
 open "regex.frg"
 
-// Assertion that the index does not decrease along the trace.
-assert {all s1, s2 : State | Trace.tr[s1][s2] = True implies s1.index <= s2.index} is necessary for valid
+test suite for valid {
+  // Assertion that the index does not decrease along the trace.
+  assert {all s1, s2 : State | Trace.tr[s1][s2] = True implies s1.index <= s2.index} is necessary for valid
 
-// Assertion that the accepting node's index is the input's length
-assert {all s : State | s.currNode = Accepting implies s.index = Input.length} is necessary for valid
+  // Assertion that the accepting node's index is the input's length
+  assert {all s : State | s.currNode = Accepting implies s.index = Input.length} is necessary for valid
 
-// Assertion that the Start state can reach the Accepting state
-assert {reachable[Accepting, Start, next, skip]} is necessary for valid
+  // Assertion that the Start state can reach the Accepting state
+  assert {reachable[Accepting, Start, next, skip]} is necessary for valid
+}
 
 // match the input AAAAAB against the pattern A*B
 pred loop {
@@ -29,6 +31,30 @@ pred loop {
 run {
     valid
     loop
+} for 6 Int, 15 State, 8 Node
+
+// attempt to match the input BA against the pattern A*B
+pred failed_loop {
+    Input.length = 2
+    Input.string[0] = B
+    Input.string[1] = A
+    some nA, nB: Node | {
+        nA.character = A
+        nB.character = B
+        nA.next = nA 
+        nA.skip = nB
+        Start.skip = nA
+        nB.next = Accepting
+    }
+}
+
+// shows that this failed because to validTransitions, which is the part that should fail.
+run {
+    validInput
+    validNodes
+    validStates
+    not validTransitions
+    failed_loop
 } for 6 Int, 15 State, 8 Node
 
 // match a random Input (XYZ) against the pattern .*

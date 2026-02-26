@@ -8,6 +8,10 @@ To implement matching a string against a regular expression (regex) pattern. Reg
 
 We implement matching against a subset of the full regex standard, namely patterns including `*`, `?`, and `+`, but without `|` disjunction and `()` character groups. We did this for simplicity, but adding in character groups is not difficult; it amounts to extending the `character` field to a `set`.
 
+![Visualization](aaabbc.png)
+
+This graphic shows the visualizer on the `cascade` test example.
+
 The visualizer on the Script -> SVG tab in Spytial Sterling shows the `Node`s connected as an nondeterministic finite automaton (NFA). The Graph view on Sterling looks complex, but this is largely due to having a few collections of objects: one letter for each letter of the alphabet, `State`s for each `State` in the Input matching, the `Input` sequence, and the `Node`s.
 
 ## Signatures and Predicates
@@ -42,7 +46,8 @@ We have several assertions ensuring certain intuitive properties must hold about
 
 Predicates for tests
 - `loop`: tests that `AAAAAB` matches against the regex pattern `A*B`
-- `dotStar`: tests that `XYZ` matches agains the regex pattern `.*`
+- `failed_loop`: shows that matching `BA` against the pattern `A*B` fails due to `validTransitions` failing, while `validInput`, `validNodes`, and `validStates` remain true. 
+- `dotStar`: tests that an arbitrarily chosen pattern (`XYZ`) matches agains the regex pattern `.*`
 - `cascade`: tests that `AAABBC` matches against the regex pattern `A*B*C`.
 
 ## Documentation
