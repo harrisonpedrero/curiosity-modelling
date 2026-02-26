@@ -16,23 +16,29 @@ Signatures
 - `Boolean`, `True`, and `False`
 - `Input`, defined by a `string` that is a partial function mapping integers to chars and `length` that is an integer
 - `Node`, defining a group of characters in the regex pattern, with fields `character` meaning a literal, `wildcard` indicating whether there is a wildcard present after the character, `next` indicating the next node in the pattern, and `skip` indicating epsilon transitions that the node could transition to alternatively. For example, if `l` represents a literal (character) being `N1`, then
-    - `l` is represented with `next = N2` and `skip = NULL`
-    - `l?` is represented by `next = N2` and `skip = N2`
-    - `l*` is represented by `next = N1` and `skip = N2`
-    - `l+` is equivalent to `ll*`
+    - `l` could be represented with `next = N2` and `skip = NULL`
+    - `l?` could be represented by `next = N2` and `skip = N2`
+    - `l*` could be represented by `next = N1` and `skip = N2`
+    - `l+` could be equivalent to `ll*`
     - `Start`, `Accepting` are distinguished states
+    - In practice, we currently have separate wildcard nodes that record `*` and do not record a character (and character nodes do not record a wildcard), but we could easily change the system to accomodate what is decribed above.
 - `State` walks through the `Node`s, matching against `Input`
 - `Trace` is a partial function that models the sequence of states, with the tuple `(state1, state2, True)` in the function if `state1` maps to `state2`.
 
-The signature essential provide the bare minimum for effectively constructing and walking through the NFA.
+The signatures essentially provide the minimum for effectively constructing and walking through the NFA correctly.
 
 Predicates for implementation
-- `init`: validates the `Input` string, the `Node`s, and `State`s
-- `validTransitions`: validates the `Nodes` transition correctly according to the `Input` string, i.e. matches the two objects
+- `valid` ensures that everything works as it should. This is separated into several components:
+- `validInput` ensures the `Input` string is the right length and has characters
+- `validNodes` ensures nodes as they should be, with `Start` and `Accepting` nodes distinguished
+- `validStates` ensures that states and the `Trace` work as they should together
+- `validTransitions` ensures that the `Trace` and the `Input` work as they should, i.e. the `Nodes` transition according to the `Trace` in a way in alignment with the `Input`
 
-The `init` predicate ensures syntactic correctness, while the `validTransitions` ensures semantic correctness in connecting the `Input` with the NFA.
+Essentially, the `validInput`, `validNodes`, and `validStates` predicates ensures those objects mean what they should, while the `validTransitions` ensures they work with the `Input`.
 
 ## Testing
+
+We have several assertions ensuring certain intuitive properties must hold about the system, such as ensuring that the index does not decrease along the `Trace`.
 
 Predicates for tests
 - `loop`: tests that `AAAAAB` matches against the regex pattern `A*B`

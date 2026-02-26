@@ -2,12 +2,6 @@
 
 open "regex.frg"
 
-// Our assertions use the following predicate:
-pred valid {
-    init
-    validTransitions
-}
-
 // Assertion that the index does not decrease along the trace.
 assert {all s1, s2 : State | Trace.tr[s1][s2] = True implies s1.index <= s2.index} is necessary for valid
 
@@ -32,6 +26,11 @@ pred loop {
     }
 }
 
+run {
+    valid
+    loop
+} for 6 Int, 15 State, 8 Node
+
 // match a random Input (XYZ) against the pattern .*
 pred dotStar {
     Input.length = 3
@@ -45,6 +44,11 @@ pred dotStar {
         Start.skip = wild
     }
 }
+
+run {
+    valid
+    dotStar
+} for 6 Int, 15 State, 8 Node
 
 // Tests multiple self-loops (AAABBC and start->A->B->C->end, requiring A and B to repeat)
 pred cascade {
@@ -69,19 +73,6 @@ pred cascade {
 }
 
 run {
-    init
-    validTransitions
-    loop
-} for 6 Int, 15 State, 8 Node
-
-run {
-    init
-    validTransitions
+    valid
     cascade
-} for 6 Int, 15 State, 8 Node
-
-run {
-    init
-    validTransitions
-    dotStar
 } for 6 Int, 15 State, 8 Node
