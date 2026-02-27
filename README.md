@@ -6,7 +6,7 @@ To implement matching a string against a regular expression (regex) pattern. Reg
 
 ## Model Design and Visualization
 
-We implement matching against a subset of the full regex standard, namely patterns including `*`, `?`, and `+`, but without `|` disjunction and `()` character groups. We did this for simplicity, but adding in character groups is not difficult; it amounts to extending the `character` field to a `set`.
+We implement matching against a subset of the full regex standard, namely patterns including `.`, `*`, `?`, and `+`, but without `|` disjunction and `()` character groups. We did this for simplicity, but adding in character groups is not difficult; it amounts to extending the `character` field to a `set`.
 
 ![Visualization](aaabbc.png)
 
@@ -19,13 +19,12 @@ The visualizer on the Script -> SVG tab in Spytial Sterling shows the `Node`s co
 Signatures
 - `Boolean`, `True`, and `False`
 - `Input`, defined by a `string` that is a partial function mapping integers to chars and `length` that is an integer
-- `Node`, defining a group of characters in the regex pattern, with fields `character` meaning a literal, `wildcard` indicating whether there is a wildcard present after the character, `next` indicating the next node in the pattern, and `skip` indicating epsilon transitions that the node could transition to alternatively. For example, if `l` represents a literal (character) being `N1`, then
+- `Node`, defining a group of characters in the regex pattern, with fields `character` meaning a literal, `wildcard` indicating whether the node is the `.` operator matching any character, `next` indicating the next node in the pattern (with character consumption), and `skip` indicating epsilon transitions that the node could transition to alternatively (without character consumption). For example, if `l` represents a literal (character) being `N1`, then
     - `l` could be represented with `next = N2` and `skip = NULL`
     - `l?` could be represented by `next = N2` and `skip = N2`
     - `l*` could be represented by `next = N1` and `skip = N2`
     - `l+` could be equivalent to `ll*`
     - `Start`, `Accepting` are distinguished states
-    - In practice, we currently have separate wildcard nodes that record `*` and do not record a character (and character nodes do not record a wildcard), but we could easily change the system to accomodate what is decribed above.
 - `State` walks through the `Node`s, matching against `Input`
 - `Trace` is a partial function that models the sequence of states, with the tuple `(state1, state2, True)` in the function if `state1` maps to `state2`.
 
@@ -49,6 +48,11 @@ Predicates for tests
 - `failed_loop`: shows that matching `BA` against the pattern `A*B` fails due to `validTransitions` failing, while `validInput`, `validNodes`, and `validStates` remain true. 
 - `dotStar`: tests that an arbitrarily chosen pattern (`XYZ`) matches agains the regex pattern `.*`
 - `cascade`: tests that `AAABBC` matches against the regex pattern `A*B*C`.
+
+Automated Verification:
+- Assertions to verify our regex patterns (`loop`, `dotStar`, and `cascade`) are satisfiable, and that our invalid pattern evaluates to unsat.
+
+
 
 ## Documentation
 
