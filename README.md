@@ -12,7 +12,7 @@ We implement matching against a subset of the full regex standard, namely patter
 
 This graphic shows the visualizer on the `cascade` test example.
 
-The visualizer on the Script -> SVG tab in Spytial Sterling shows the `Node`s connected as an nondeterministic finite automaton (NFA). The Graph view on Sterling looks complex, but this is largely due to having a few collections of objects: one letter for each letter of the alphabet, `State`s for each `State` in the Input matching, the `Input` sequence, and the `Node`s.
+The visualizer on the Script -> SVG tab in Spytial Sterling shows the `Node`s connected as an nondeterministic finite automaton (NFA). The Graph view on Sterling looks complex, but this is largely due to having a few collections of objects: one letter for each letter of the alphabet, `State`s for each `State` in the Input matching, the `Input` sequence, and the `Node`s. The visualizer was written with Claude, but this is the only component of the project besides ideation that used an LLM.
 
 ## Signatures and Predicates
 
