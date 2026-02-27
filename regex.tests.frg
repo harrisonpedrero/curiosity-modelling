@@ -102,3 +102,11 @@ run {
     valid
     cascade
 } for 6 Int, 15 State, 8 Node
+
+assert { valid and loop } is sat for 6 Int, 15 State, 8 Node
+assert { valid and dotStar } is sat for 6 Int, 15 State, 8 Node
+assert { valid and cascade } is sat for 6 Int, 15 State, 8 Node
+assert { 
+    validInput and validNodes and validStates and validTransitions and failed_loop 
+} is unsat
+assert { valid } is sat

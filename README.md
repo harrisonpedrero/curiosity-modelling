@@ -50,9 +50,7 @@ Predicates for tests
 - `cascade`: tests that `AAABBC` matches against the regex pattern `A*B*C`.
 
 Automated Verification:
-- Assertions to verify our regex patterns (`loop`, `dotStar`, and `cascade`) are satisfiable, and that our invalid pattern evaluates to unsat.
-
-
+- Assertions to verify our regex patterns (loop, dotStar, and cascade) are satisfiable, and that our invalid pattern evaluates to unsat.
 
 ## Documentation
 
